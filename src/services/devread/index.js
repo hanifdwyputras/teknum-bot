@@ -26,7 +26,10 @@ async function devRead(context, cache) {
 
   if (WHITELIST.includes(query.toLowerCase())) {
     // Check if the data exists in redis
-    const { value: queryData, ttl } = await cache.findOne({ key: `devread:${encodeURI(query.toLowerCase())}` });
+    const { value: queryData, ttl } = await cache.findOne({ key: `devread:${encodeURI(query.toLowerCase())}` }) || {
+      value: undefined,
+      ttl: 0
+    };
 
     if (queryData && ttl < Date.now()) {
       const items = shuffleArray(JSON.parse(queryData), 3);
